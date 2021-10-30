@@ -1,0 +1,51 @@
+.plansScreen {
+  margin-top: 20px;
+}
+
+.plansScreen > h3 {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #282c2d;
+}
+
+.plansScreen > p {
+  color: gray;
+  font-size: 18px;
+  font-weight: 500;
+  padding-top: 10px;
+  margin-bottom: 20px;
+}
+
+.plansScreen__plan {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px;
+  color: white;
+  opacity: 0.8;
+}
+
+.plansScreen__plan:hover {
+  opacity: 1;
+}
+
+.plansScreen__planInfo > h5 {
+  font-weight: 800;
+  font-size: 14px;
+}
+.plansScreen__planInfo > p {
+  font-weight: 800;
+  font-size: 12px;
+}
+.plansScreen__subscribe {
+  padding: 12px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: #c10914;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.plansScreen__subscribe:disabled {
+  background-color: gray;
+}
