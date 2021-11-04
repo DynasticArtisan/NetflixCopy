@@ -1,34 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import './plansScreen.css'
 import db from '../firebase'
-import { useSelector } from 'react-redux'
-import { selectUser } from '../features/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectSubscription, selectUser, setRole } from '../features/userSlice'
 import { loadStripe } from '@stripe/stripe-js'
+import Loader from '../components/Loader/Loader'
 
 const PlansScreen = () => {
     const user = useSelector(selectUser)
+    const subscription = useSelector(selectSubscription)
     const [products, setProducts] = useState({})
-    const [ subscription, setSubscription ] = useState(null)
+    const [prodLoading, setProdLoading] = useState(true)
 
     useEffect(()=>{
-        db.collection('customers')
-            .doc(user.uid)
-            .collection('subscriptions')
-            .get()
-            .then(snap => {
-                snap.forEach(async subscription => {
-                    const { role, current_period_end, current_period_start } = subscription.data()
-                    setSubscription( {
-                        role,
-                        currentPeriodStart: current_period_start.seconds,
-                        currentPeriodEnd: current_period_end.seconds
-                    } )
-                })
-            })
-    },[user.uid])
-
-
-    useEffect(()=>{
+        setProdLoading(true)
         db.collection('products').where('active','==',true)
         .get().then(qSnapshot => {
             const products = {}
@@ -41,11 +26,15 @@ const PlansScreen = () => {
                 })
             })
             setProducts(products)
+            setProdLoading(false)
         })
+
     },[])
 
     const loadCheckout = async (priceId) => {
-        const docRef = await db.collection('customers')
+        try {
+            setProdLoading(true)
+            const docRef = await db.collection('customers')
             .doc(user.uid)
             .collection('checkout_sessions')
             .add({
@@ -56,20 +45,31 @@ const PlansScreen = () => {
         docRef.onSnapshot(async snap => {
             const { err, sessionId } = snap.data()
             if(err){
+                setProdLoading(false)
                 alert(err.message)
             }
-            if(sessionId) {
-                const stripe = await loadStripe('pk_test_51JqGRVE87ExSDM2vHQT0laYY9qCRUssAgr0F5ZNNTgALfFmHS7t4dc5acxbjCdYJnX7iiGtSlXNpkLYuHk9eTVKR00uonolx4F')
+            else if(sessionId) {
+                const stripe = await loadStripe('pk_test_51JqGRVE87ExSDM2vHQT0laYY9qCRUssAgr0F5ZNNTgALfFmHS7t4dc5acxbjCdYJnX7iiGtSlXNpkLYuHk9eTVKR00uonolx4F')              
                 stripe.redirectToCheckout({ sessionId })
             }
         })
+        } catch (error) {
+            setProdLoading(false)
+        }
+        
     }
-
+    if(prodLoading){
+        return (
+            <div className='plansScreen'>
+                <Loader/>
+            </div>
+        )
+    }
     
    
     return (
         <div className='plansScreen'>
-           <h3>{subscription ? `Plans (current plan: ${subscription.role})`: 'Plans'}</h3>
+           <h3>{subscription?.role ? `Plans (current plan: ${subscription.role})`: 'Plans'}</h3>
            {subscription && <p>Renewal date: {new Date(subscription?.currentPeriodEnd*1000).toLocaleDateString()}</p>}
            {
                Object.entries(products).map(([key, val])=>{

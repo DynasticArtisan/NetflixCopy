@@ -1,3 +1,22 @@
-.App {
+body {
   background-color: #000;
+}
+
+.App {
+  height: 300px;
+  min-height: 100vh;
+}
+
+@media (max-width: 550px) {
+  html {
+    font-size: 12px;
+  }
+
+  .profileScreen__info > img {
+    display: none;
+  }
+
+  .loginScreen__input > form > input {
+    display: none;
+  }
 }

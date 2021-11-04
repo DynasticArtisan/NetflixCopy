@@ -1,5 +1,6 @@
 .plansScreen {
   margin-top: 20px;
+  height: 380px;
 }
 
 .plansScreen > h3 {
@@ -19,7 +20,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 25px;
+  padding: 15px;
   color: white;
   opacity: 0.8;
 }

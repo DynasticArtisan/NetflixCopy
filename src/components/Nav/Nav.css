@@ -2,8 +2,8 @@
   position: fixed;
   width: 100%;
   top: 0;
-  height: 40px;
-  z-index: 1;
+  height: 45px;
+  z-index: 10;
   transition-timing-function: ease-in;
   transition: all 0.5s;
 }
@@ -24,8 +24,8 @@
   cursor: pointer;
 }
 .nav__avatar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   object-fit: cover;
   cursor: pointer;
 }

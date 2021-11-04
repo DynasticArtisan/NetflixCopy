@@ -1,8 +1,12 @@
 .row {
   color: #fff;
-  padding: 3rem 2rem;
+  padding: 2rem 2rem;
 }
-
+.row__movie > h4 {
+  text-align: center;
+  margin-top: 7px;
+  font-size: 13px;
+}
 .row__posters {
   display: flex;
   padding: 2rem 0;

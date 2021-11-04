@@ -5,16 +5,22 @@ import axios from '../../axios'
 
 const Banner = () => {
     const [movie, setMovie] = useState([])
+    const [loading, setLoading] = useState(false)
     useEffect(()=>{
         async function fetchData(){
-            // const res = await instance.get('/blabla')
-            const res = await axios.get(requests.fetchNetflixOriginals)
-            setMovie(res.data.results[Math.floor(Math.random()*res.data.results.length-1)])
-            return res
+            try {
+                setLoading(true)
+                const res = await axios.get(requests.fetchNetflixOriginals)
+                setMovie(res.data.results[Math.floor(Math.random()*res.data.results.length-1)])
+                setLoading(false)
+                return res
+            } catch (err) {
+                setLoading(false)
+                return err
+            }
         }
         fetchData()
     },[])
-
 
     function truncate (string, n){
         return string?.length > n ? string.substr(0, n-1) + '...' : string
@@ -22,22 +28,45 @@ const Banner = () => {
 
     return (
         <div className="banner" style={
-            {
+            {   
                 backgroundPosition: 'top center',
                 backgroundSize: 'cover',
-                backgroundImage: `url("https://image.tmdb.org/t/p/original${movie?.backdrop_path}")`
+                backgroundImage: movie ? `url("https://image.tmdb.org/t/p/original${movie?.backdrop_path}")` : 'url("https://thebutlercollegian.com/wp-content/uploads/2019/03/netflix-image.jpg")'
             }
         }>
-            <div className="banner__content">
-                <h1 className="banner__title">
-                    {movie?.title || movie?.name || movie?.original_name}
-                </h1>
-                <div className="banner__buttons">
-                    <button className="banner__button">Play</button>
-                    <button className="banner__button">My List</button>
+            {
+                loading
+                ?
+                <h1>loadings</h1>
+                :
+                <div className="banner__content">
+                    <h1 className="banner__title">
+                        {movie?.title || movie?.name || movie?.original_name || 'Watch the newest films with Netflix'}
+                    </h1>
+
+
+                    {
+                        movie && <div className="banner__info">
+                                    <div className="stars">
+                                        {
+                                            [...Array(Math.round(movie.vote_average || 0))].map((star, index) => <img key={index} src='https://cdn.picpng.com/star/icon-star-32065.png'
+                                            className='banner__star' alt='rating'/>  )
+                                        }
+                                         
+                                    </div>
+                                    <div className="banner__buttons">
+                                        <button className="banner__button">Play</button>
+                                        <button className="banner__button">My List</button>
+                                    </div>
+                                    <h2 className="banner__description">{truncate(movie?.overview, 150)}</h2>
+                                </div>
+                    }
+
+
                 </div>
-                <h2 className="banner__description">{truncate(movie?.overview, 150)}</h2>
-            </div>
+            }
+            
+
             <div className="banner--fadeBottom"/>
         </div>
     )

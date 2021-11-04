@@ -15,8 +15,6 @@ const SignUpScreen = () => {
     const signIn = (e) => {
         e.preventDefault()
         auth.signInWithEmailAndPassword(emailRef.current.value, passRef.current.value)
-            .then((user)=>{
-            console.log(user)})
             .catch(err => alert(err.message))
     }
     return (
